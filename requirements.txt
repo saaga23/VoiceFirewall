@@ -11,8 +11,6 @@ streamlit
 altair
 pandas
 librosa
-pyttsx3s
-# Windows Audio
+# Smart Audio Selection
 pyaudiowpatch; sys_platform == 'win32'
-# Linux/Mac Audio
 pyaudio; sys_platform != 'win32'

@@ -1,5 +1,9 @@
+# CPU-only PyTorch (Small & Fast for Cloud)
+--extra-index-url https://download.pytorch.org/whl/cpu
 torch
 torchaudio
+
+# Data & logic
 numpy<2.0.0
 scipy
 transformers
@@ -13,6 +17,7 @@ streamlit
 altair
 pandas
 librosa
+
 # Audio Drivers
 pyaudiowpatch; sys_platform == 'win32'
 pyaudio; sys_platform != 'win32'

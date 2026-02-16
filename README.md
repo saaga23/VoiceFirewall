@@ -55,7 +55,7 @@ A dedicated tool for analyzing pre-recorded evidence.
 **The Dashboard:**
 A clean, "Glassmorphism" interface built with Streamlit, designed for high-stress security environments. It provides immediate visual feedback via a live biometric resonance graph.
 
-![Live Dashboard Screenshot](docs/dashboard.png)
+![Live Dashboard Screenshot](docs/Dashboard.png)
 *(Note: Upload your dashboard screenshot to a 'docs' folder and name it dashboard.png)*
 
 **The Forensic Audit:**

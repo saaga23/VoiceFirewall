@@ -1,0 +1,12 @@
+# Ignore Virtual Environment
+venv/
+__pycache__/
+
+# Ignore Large Models (Users will download them via script)
+models/
+assets/
+temp_audio/
+*.wav
+
+# Ignore Secrets
+.env

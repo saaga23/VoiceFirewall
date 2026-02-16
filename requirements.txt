@@ -1,0 +1,18 @@
+numpy<2.0.0
+scipy
+transformers
+huggingface-hub
+onnxruntime
+colorama
+customtkinter
+pillow
+matplotlib
+streamlit
+altair
+pandas
+librosa
+pyttsx3s
+# Windows Audio
+pyaudiowpatch; sys_platform == 'win32'
+# Linux/Mac Audio
+pyaudio; sys_platform != 'win32'

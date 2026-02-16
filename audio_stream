@@ -1,0 +1,77 @@
+import pyaudiowpatch as pyaudio
+import wave
+import time
+import os
+
+# Configuration
+CHUNK_DURATION = 4  # Seconds to record
+RATE = 16000  # Standard for speech models
+CHUNK_SIZE = 1024
+OUTPUT_FOLDER = "./temp_audio"
+
+
+def get_loopback_device(p):
+    """Finds the system's default speaker (Loopback)"""
+    try:
+        # Get default WASAPI info
+        wasapi_info = p.get_host_api_info_by_type(pyaudio.paWASAPI)
+        default_speakers = p.get_device_info_by_index(wasapi_info["defaultOutputDevice"])
+
+        if not default_speakers["isLoopbackDevice"]:
+            # If default isn't loopback, search for it
+            for loopback in p.get_loopback_device_info_generator():
+                if default_speakers["name"] in loopback["name"]:
+                    return loopback
+            return None  # Fallback
+
+        return default_speakers
+    except OSError:
+        print("❌ Error: Looks like WASAPI is not available.")
+        return None
+
+
+def record_chunk(filename):
+    if not os.path.exists(OUTPUT_FOLDER):
+        os.makedirs(OUTPUT_FOLDER)
+
+    p = pyaudio.PyAudio()
+    device = get_loopback_device(p)
+
+    if not device:
+        print("❌ CRITICAL: No Loopback Device found!")
+        return
+
+    print(f"🎤 Listening to: {device['name']}")
+
+    stream = p.open(format=pyaudio.paInt16,
+                    channels=device["maxInputChannels"],
+                    rate=int(device["defaultSampleRate"]),
+                    input=True,
+                    input_device_index=device["index"],
+                    frames_per_buffer=CHUNK_SIZE)
+
+    frames = []
+    print(f"🔴 Recording {CHUNK_DURATION}s chunk...")
+
+    # Calculate frames needed for 4 seconds
+    for _ in range(0, int(device["defaultSampleRate"] / CHUNK_SIZE * CHUNK_DURATION)):
+        data = stream.read(CHUNK_SIZE)
+        frames.append(data)
+
+    stream.stop_stream()
+    stream.close()
+    p.terminate()
+
+    # Save as WAV
+    wf = wave.open(filename, 'wb')
+    wf.setnchannels(device["maxInputChannels"])
+    wf.setsampwidth(p.get_sample_size(pyaudio.paInt16))
+    wf.setframerate(int(device["defaultSampleRate"]))
+    wf.writeframes(b''.join(frames))
+    wf.close()
+    print(f"✅ Saved: {filename}")
+
+
+if __name__ == "__main__":
+    # Test Run: Record one chunk
+    record_chunk(os.path.join(OUTPUT_FOLDER, "test_clip.wav"))s
